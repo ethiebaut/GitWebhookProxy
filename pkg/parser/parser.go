@@ -11,6 +11,7 @@ import (
 func Parse(req *http.Request, provider providers.Provider) (*providers.Hook, error) {
 	hook := &providers.Hook{
 		Headers: make(map[string]string),
+		Request: req,
 	}
 
 	for _, header := range provider.GetHeaderKeys() {

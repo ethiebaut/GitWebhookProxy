@@ -2,12 +2,14 @@ package providers
 
 import (
 	"errors"
+	"net/http"
 	"strings"
 )
 
 const (
 	GithubProviderKind            = "github"
 	GitlabProviderKind            = "gitlab"
+	BitbucketProviderKind         = "bitbucket"
 	ContentTypeHeader             = "Content-Type"
 	DefaultContentTypeHeaderValue = "application/json"
 )
@@ -25,6 +27,7 @@ type Provider interface {
 func assertProviderImplementations() {
 	var _ Provider = (*GithubProvider)(nil)
 	var _ Provider = (*GitlabProvider)(nil)
+	var _ Provider = (*BitbucketProviderKind)(nil)
 }
 
 func NewProvider(provider string, secret string) (Provider, error) {
@@ -37,6 +40,8 @@ func NewProvider(provider string, secret string) (Provider, error) {
 		return NewGithubProvider(secret)
 	case GitlabProviderKind:
 		return NewGitlabProvider(secret)
+	case BitbucketProviderKind:
+		return NewBitbucketProvider(secret)
 	default:
 		return nil, errors.New("Unknown Git Provider '" + provider + "' specified")
 	}
@@ -46,4 +51,5 @@ type Hook struct {
 	Payload       []byte
 	Headers       map[string]string
 	RequestMethod string
+	Request       *http.Request
 }
